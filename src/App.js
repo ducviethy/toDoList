@@ -38,7 +38,6 @@ export default function App() {
       itemsLeft++
     }
   }
-  console.log(listToDo);
   const renderTask = () => {
     switch (statusFilter) {
       case 'SET_ALL':
@@ -74,6 +73,17 @@ export default function App() {
         <input id="toggle-all"
           className="toggle-all"
           type="checkbox"
+          onChange={(e) => {
+            if (e.target.checked) {
+              dispatch({
+                type:"activeAll"
+              })
+            }else{
+              dispatch({
+                type:"deActiveAll"
+              })
+            }
+          }}
         />
         <label htmlFor="toggle-all">Mark all as complete</label>
         <ul className="todo-list">

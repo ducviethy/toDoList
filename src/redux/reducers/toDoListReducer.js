@@ -65,6 +65,20 @@ const toDoListReducer = (state = initialState, action) => {
       }
       state.statusFilter = 'SET_ALL'
       return { ...state }
+    case "activeAll":
+      console.log('active all');
+      state.listToDo.forEach((item,index) => {
+        item.check = true
+      })
+      state.listToDo = [...state.listToDo]
+      return { ...state }
+    case "deActiveAll":
+      console.log('de active all');
+      state.listToDo.forEach((item,index) => {
+        item.check = false
+      })
+      state.listToDo = [...state.listToDo]
+      return { ...state }
     default:
       return state
   }
