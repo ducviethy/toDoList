@@ -28,7 +28,7 @@ export default function TableRow(props) {
     const handleCheck = (e) => {
         dispatch({
             type: "SET_CHECK",
-            check:e.target.checked,
+            check: e.target.checked,
             index: props.index
         })
     }
@@ -41,12 +41,15 @@ export default function TableRow(props) {
         return (
             <li className="ng-scope">
                 <div className='view'>
-                    <input className="toggle" type="checkbox" onChange={handleCheck} />
-                    <label className="ng-binding" onClick={() => {
-                        setShow({
-                            status: false
-                        })
-                    }}>{props.name}</label>
+                    <input className="toggle" type="checkbox" onChange={handleCheck} checked={props.check?true:false}/>
+                    <label className="ng-binding"
+                        style={props.check?{textDecoration:'line-through'}:{}}
+                        onClick={() => {
+                            setShow({
+                                status: false
+                            })
+                        }}
+                    >{props.name}</label>
                     <button className="destroy" onClick={() => {
                         dispatch({
                             type: "DELETE_TASK",
@@ -59,9 +62,13 @@ export default function TableRow(props) {
     } else {
         return <li className="ng-scope">
             <form className="ng-pristine ng-valid" onSubmit={handleSubmit}>
-                <input className='edit'
+                <input className='edit ng-pristine ng-valid ng-touched'
                     onChange={handleChange}
                     value={taskName.name}
+                    style={{
+                        width: '500px',
+                        marginLeft: '50px'
+                    }}
                 />
             </form>
         </li>

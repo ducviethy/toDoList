@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import TableRow from './TableRow';
 export default function App() {
@@ -21,25 +21,37 @@ export default function App() {
       taskName: ""
     })
   }
+  useEffect(() => {
+    dispatch({
+      type: "SET_ALL",
+    })
+  }, [])
   let listToDo = useSelector((state) => {
     return state.toDoListReducer.listToDo
   })
   let statusFilter = useSelector((state) => {
     return state.toDoListReducer.statusFilter
   })
+  let itemsLeft = 0
+  for (const iterator of listToDo) {
+    if (iterator.check!==true) {
+      itemsLeft++
+    }
+  }
+  console.log(listToDo);
   const renderTask = () => {
     switch (statusFilter) {
       case 'SET_ALL':
         return listToDo.map((item, index) => {
-          return <TableRow key={index} name={item.name} index={index} id={item.id} />
+          return <TableRow key={index} name={item.name} index={index} id={item.id} check={item.check}/>
         })
       case 'SET_ACTIVE':
-        return listToDo.filter((item,index) => item.status==='Active').map((item, index) => {
-          return <TableRow key={index} name={item.name} index={index} id={item.id} />
+        return listToDo.filter((item, index) => item.check !== true).map((item, index) => {
+          return <TableRow key={index} name={item.name} index={index} id={item.id} check={item.check}/>
         })
       case 'SET_COMPLETED':
-        return listToDo.filter((item,index) => item.status==='Completed').map((item, index) => {
-          return <TableRow key={index} name={item.name} index={index} id={item.id} />
+        return listToDo.filter((item, index) => item.check === true).map((item, index) => {
+          return <TableRow key={index} name={item.name} index={index} id={item.id} check={item.check}/>
         })
       default:
         break;
@@ -70,36 +82,47 @@ export default function App() {
       </section>
       <footer className="footer">
         <span className="todo-count">
-          <strong className="ng-binding">{listToDo.length} items left</strong>
+          <strong className="ng-binding">{itemsLeft} items left</strong>
         </span>
         <ul className="filters">
           <li>
-            <span className="selected" onClick={() => {
-              dispatch({
-                type: "SET_ALL"
-              })
-            }}>All</span>
+            <span
+              className={(statusFilter === 'SET_ALL') ? 'selected' : ''}
+              onClick={() => {
+                dispatch({
+                  type: "SET_ALL"
+                })
+              }}
+            >All</span>
           </li>
           <li>
-            <span onClick={() => {
-              dispatch({
-                type: "SET_ACTIVE"
-              })
-            }}>Active</span>
+            <span
+              className={(statusFilter === 'SET_ACTIVE') ? 'selected' : ''}
+              onClick={() => {
+                dispatch({
+                  type: "SET_ACTIVE"
+                })
+              }}
+            >Active</span>
           </li>
           <li>
-            <span onClick={() => {
-              dispatch({
-                type: "SET_COMPLETED"
-              })
-            }}>Completed</span>
+            <span
+              className={(statusFilter === 'SET_COMPLETED') ? 'selected' : ''}
+              onClick={() => {
+                dispatch({
+                  type: "SET_COMPLETED"
+                })
+              }}
+            >Completed</span>
           </li>
         </ul>
-        <span className="clear-completed ng-hide" onClick={() => {
-          dispatch({
-            type: "CLEAR_COMPLETED"
-          })
-        }}>Clear completed</span>
+        <span className="clear-completed ng-hide"
+          onClick={() => {
+            dispatch({
+              type: "CLEAR_COMPLETED"
+            })
+          }}
+        >Clear completed</span>
       </footer>
     </section>
   )
